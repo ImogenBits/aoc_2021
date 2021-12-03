@@ -1,59 +1,66 @@
-use std::{
-    fs,
-    io::{self, BufRead},
-};
-use itertools::izip;
+use aoc_2021::get_input;
+use core::panic;
+use std::str::FromStr;
 
-fn main() -> io::Result<()> {
-    let f = fs::File::open("input")?;
-    let mut numbers: Vec<u64> = vec![];
-    let mut reader = io::BufReader::new(f);
-    let mut buffer = String::new();
+enum Command {
+    Forward(i64),
+    Down(i64),
+    Up(i64),
+}
+impl FromStr for Command {
+    type Err = ();
 
-    while reader.read_line(&mut buffer).unwrap() != 0 {
-        numbers.push(buffer.trim().parse().unwrap());
-        buffer.clear();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let (a, b) = s.split_once(" ").unwrap();
+        let b = b.parse().unwrap();
+        Ok(match a {
+            "forward" => Command::Forward(b),
+            "down" => Command::Down(b),
+            "up" => Command::Up(b),
+            _ => panic!(),
+        })
     }
-    let iter = izip!(numbers.iter(), numbers.iter().skip(1), numbers.iter().skip(2)).map(|(a, b, c)| a + b + c);
-    let iter2 = iter.clone();
-
-    let solution = iter
-        .zip(iter2.skip(1))
-        .filter(|(a, b)| a < b)
-        .count();
-
-    println!("{}", solution);
-
-    Ok(())
 }
 
-fn main2() -> io::Result<()> {
-    let f = fs::File::open("input")?;
-    let mut reader = io::BufReader::new(f);
-    let mut buffer = String::new();
-    let mut depth: i64 = 0;
-    let mut distance: i64 = 0;
-    let mut aim: i64 = 0;
+fn part1(commands: &[Command]) -> i64 {
+    let mut depth = 0;
+    let mut distance = 0;
 
-    while reader.read_line(&mut buffer).unwrap() != 0 {
-        let mut line_iter = buffer.trim().split(" ");
-        let s = line_iter.next().unwrap();
-        let n: i64 = line_iter.next().unwrap().parse().unwrap();
-        match s {
-            "forward" => {
-                depth += aim * n;
-                distance += n;
-            }
-            "down" => aim += n,
-            "up" => aim -= n,
-            _ => panic!(),
+    for c in commands {
+        use Command::*;
+        match c {
+            Forward(d) => distance += d,
+            Down(d) => depth += d,
+            Up(d) => depth -= d,
         }
-        buffer.clear();
     }
 
-    let solution = distance * depth;
+    depth * distance
+}
 
-    println!("{}", solution);
+fn part2(commands: &[Command]) -> i64 {
+    let mut depth = 0;
+    let mut distance = 0;
+    let mut aim = 0;
 
-    Ok(())
+    for c in commands {
+        use Command::*;
+        match c {
+            Forward(d) => {
+                depth += aim * d;
+                distance += d;
+            }
+            Down(d) => aim += d,
+            Up(d) => aim -= d,
+        }
+    }
+
+    depth * distance
+}
+
+fn main() {
+    let commands: Vec<Command> = get_input!(|s| s.parse().unwrap());
+
+    println!("part1: {}", part1(&commands));
+    println!("part2: {}", part2(&commands));
 }
