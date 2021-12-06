@@ -56,10 +56,11 @@ fn part2(mut squares: Vec<Vec<Vec<(u64, bool)>>>, numbers: &[u64]) -> u64 {
             squares.retain(|s| !is_solved(s));
         } else {
             if is_solved(&squares[0]) {
-                return n * (squares[0]
-                    .iter()
-                    .map(|r| r.iter().filter(|(_, b)| !*b).map(|(n, _)| n).sum::<u64>())
-                    .sum::<u64>())
+                return n
+                    * (squares[0]
+                        .iter()
+                        .map(|r| r.iter().filter(|(_, b)| !*b).map(|(n, _)| n).sum::<u64>())
+                        .sum::<u64>());
             }
         }
     }
