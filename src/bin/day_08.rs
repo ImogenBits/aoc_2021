@@ -1,12 +1,10 @@
-use std::collections::HashSet;
-
 use aoc_2021::get_input;
 use itertools::Itertools;
+use std::collections::HashSet;
 
-fn find_remove(
-    input: &mut Vec<HashSet<char>>,
-    predicate: impl Fn(&HashSet<char>) -> bool,
-) -> HashSet<char> {
+type Pattern = HashSet<char>;
+
+fn find_remove(input: &mut Vec<Pattern>, predicate: impl Fn(&Pattern) -> bool) -> Pattern {
     let (i, digit) = input
         .iter()
         .enumerate()
@@ -17,7 +15,7 @@ fn find_remove(
     digit
 }
 
-fn decode(mut input: Vec<HashSet<char>>) -> Vec<HashSet<char>> {
+fn decode(mut input: Vec<Pattern>) -> Vec<Pattern> {
     let mut digits = vec![HashSet::new(); 10];
 
     digits[1] = find_remove(&mut input, |s| s.len() == 2);
@@ -60,7 +58,7 @@ fn decode(mut input: Vec<HashSet<char>>) -> Vec<HashSet<char>> {
     digits
 }
 
-fn part1(input: Vec<(Vec<HashSet<char>>, Vec<HashSet<char>>)>) -> usize {
+fn part1(input: Vec<(Vec<Pattern>, Vec<Pattern>)>) -> usize {
     input
         .into_iter()
         .map(|(i, d)| {
@@ -81,7 +79,7 @@ fn part1(input: Vec<(Vec<HashSet<char>>, Vec<HashSet<char>>)>) -> usize {
         .count()
 }
 
-fn part2(input: Vec<(Vec<HashSet<char>>, Vec<HashSet<char>>)>) -> usize {
+fn part2(input: Vec<(Vec<Pattern>, Vec<Pattern>)>) -> usize {
     input
         .into_iter()
         .map(|(i, d)| {

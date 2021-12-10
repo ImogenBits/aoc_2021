@@ -1,7 +1,9 @@
 use aoc_2021::get_input;
 
 fn boop(numbers: &[u64], steps: u64) -> usize {
-    let mut counts = (0..=8).map(|x| numbers.iter().filter(|n| **n == x).count()).collect::<Vec<_>>();
+    let mut counts = (0..=8)
+        .map(|x| numbers.iter().filter(|n| **n == x).count())
+        .collect::<Vec<_>>();
     for _ in 0..steps {
         let n = counts.remove(0);
         counts[6] += n;
@@ -19,10 +21,10 @@ fn part2(numbers: &[u64]) -> usize {
 
 fn main() {
     let numbers = &get_input!(|s| s
-        .split(",")
+        .split(',')
         .map(|s| s.parse::<u64>().unwrap())
         .collect::<Vec<_>>())[0];
-    
+
     println!("part1: {}", part1(numbers));
     println!("part2: {}", part2(numbers));
 }
